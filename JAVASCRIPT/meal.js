@@ -12,6 +12,7 @@ const display = meal =>{
     const body = document.getElementById('container');
     body.innerHTML ='';
     meal.forEach(element => {
+        console.log(element);
         const div = document.createElement('div');
         div.classList.add('col');
         div.innerHTML = `
@@ -20,7 +21,9 @@ const display = meal =>{
                 <div class="card-body">
                   <h5 class="card-title">${element.strMeal}</h5>
                   <p class="card-text">This is a longer card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
-                  <p class="card-text">${element.strCategory}</>
+                  <p class="card-text">${element.strCategory}<p/>
+                  <button onclick="showMeal(${element.idMeal})" type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">Details
+                  </button>
                 </div>
             </div>
         `
@@ -34,4 +37,26 @@ const searchMeal = () =>{
     // console.log(mealName);
     func(mealName);
 }
-func('rice');
+const showMeal = (showId) =>{
+    const modalURL = `https://www.themealdb.com/api/json/v1/1/lookup.php?i=${showId}`;
+    fetch(modalURL)
+        .then(res => res.json())
+        .then(data => details(data.meals[0]))
+    // console.log(modalURL);
+}
+const details = (mealInfo) =>{
+    const modalTitle = document.getElementById('exampleModalLabel');
+    modalTitle.innerText = mealInfo.strMeal;
+    const modalBody = document.getElementById('modalBody');
+    console.log(modalBody);
+    modalBody.innerHTML = `
+    <img class="img-fluid" src="${mealInfo.strMealThumb}" alt="">
+    <p>Instruction: ${mealInfo.strInstructions}<p/>
+    <p>Area: ${mealInfo.strArea}<p/>
+    <p>Google: ${mealInfo.strSource}<p/>
+    <p>Youtube: ${mealInfo.strYoutube}<p/>
+    
+    `
+   
+}
+func('chicken');
